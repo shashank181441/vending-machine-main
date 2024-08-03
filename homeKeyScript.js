@@ -47,7 +47,7 @@ async function renderProducts() {
     // Create the image container
     const imgContainer = document.createElement("div");
     imgContainer.className =
-      "aspect-h-1 aspect-w-1 w-full h-64 overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7";
+      "relative aspect-h-1 aspect-w-1 w-full h-64 overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7";
     const img = document.createElement("img");
     img.src = product.thumbnail;
     img.alt = `Image of ${product.title}`;
@@ -55,12 +55,18 @@ async function renderProducts() {
       "h-full w-full object-cover object-center group-hover:opacity-75";
     imgContainer.appendChild(img);
 
+    // Create the product number element
+    const productNum = document.createElement("div");
+    productNum.className = "absolute top-2 left-2 w-8 h-8 flex items-center justify-center rounded-full bg-gray-700 text-white text-sm font-semibold";
+    productNum.textContent = product.productNumber;
+    imgContainer.appendChild(productNum);
+
     // Create the text and button section
     const textContainer = document.createElement("div");
     textContainer.className = "w-full justify-between items-center";
     const title = document.createElement("h3");
     title.className =
-      "mt-4 text-sm text-gray-700 text-xl font-sans font-semibold text-left";
+      "mt-4 text-md text-gray-700 text-xl font-sans font-semibold text-left";
     title.textContent = product.title;
     const priceAndQuantity = document.createElement("div");
     priceAndQuantity.className = "flex justify-between";
@@ -88,6 +94,7 @@ async function renderProducts() {
     productContainer.appendChild(productCard);
   });
 }
+
 
 async function renderCategories() {
   const categories = ['beverage', 'snacks', 'chocolate'];
@@ -196,4 +203,79 @@ function updateActiveButton(activeCategory) {
 }
 
 
+// Keypad
 
+function openKeypad() {
+  const keypadModal = document.getElementById('keypadModal');
+  keypadModal.classList.remove('translate-y-full');
+  keypadModal.classList.add('translate-y-0');
+}
+
+function closeKeypad() {
+  const keypadModal = document.getElementById('keypadModal');
+  keypadModal.classList.remove('translate-y-0');
+  keypadModal.classList.add('translate-y-full');
+}
+
+// Initialize keypad
+document.addEventListener("DOMContentLoaded", function () {
+  const keypadContainer = document.getElementById('keypadContainer');
+  const inputBar = document.getElementById('inputBar');
+  const closeKeypadButton = document.getElementById('closeKeypad');
+
+  // Create buttons for the keypad
+  for (let i = 1; i <= 9; i++) {
+    createButton(i);
+  }
+  createButton(''); // Placeholder for alignment
+  createButton(0);
+  createDeleteButton(); // Add delete button
+
+  function createButton(number) {
+    const button = document.createElement('button');
+    button.className = 'bg-blue-500 text-white py-2 px-4 rounded-full text-xl h-16 w-16 flex items-center justify-center';
+    if (number === "") {
+      button.classList.add("visibility-none");
+    }
+    button.textContent = number;
+    button.onclick = () => {
+      if (number !== '') {
+        inputBar.value += number;
+        filterProductsByProductNumber(inputBar.value); // Filter products on each keystroke
+      }
+    };
+    keypadContainer.appendChild(button);
+  }
+
+  function createDeleteButton() {
+    const button = document.createElement('button');
+    button.className = 'bg-red-500 text-white py-2 px-4 rounded-full text-xl h-16 w-16 flex items-center justify-center';
+    button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>`;
+    button.onclick = () => {
+      inputBar.value = inputBar.value.slice(0, -1);
+      filterProductsByProductNumber(inputBar.value); // Filter products on each delete
+    };
+    keypadContainer.appendChild(button);
+  }
+
+  closeKeypadButton.onclick = closeKeypad;
+});
+
+// Function to filter products based on productNumber field
+function filterProductsByProductNumber(number) {
+  // Check if myProducts is populated
+  if (!Array.isArray(myProducts)) {
+    console.error("myProducts is not an array or is not initialized.");
+    return;
+  }
+
+  // Check if the products array is being updated
+  products = myProducts.filter(product => product.productNumber.toString().includes(number));
+
+  // Debug filtered products
+  console.log("Filtered products:", products);
+
+  renderProducts();
+}
