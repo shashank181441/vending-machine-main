@@ -1,6 +1,6 @@
 async function fetchProducts() {
   try {
-    const response = await fetch('http://localhost:8001/api/v1/products');
+    const response = await fetch('https://vendingbackend-production.up.railway.app/api/v1/products');
     const data = await response.json();
     return data.data; // Adjusted to match the new data structure
   } catch (error) {
@@ -11,7 +11,7 @@ async function fetchProducts() {
 
 async function fetchCarts() {
   try {
-    const response = await fetch('http://localhost:8001/api/v1/carts');
+    const response = await fetch('https://vendingbackend-production.up.railway.app/api/v1/carts');
     const data = await response.json();
     console.log(data.data);
     return data.data;
@@ -141,7 +141,7 @@ function addtoCart(product, button) {
 
   // Add-to-cart logic here
   try {
-    fetch(`http://localhost:8001/api/v1/carts/${product._id}`, { // Use _id instead of id
+    fetch(`https://vendingbackend-production.up.railway.app/api/v1/carts/${product._id}`, { // Use _id instead of id
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({})

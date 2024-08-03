@@ -1,6 +1,6 @@
 async function fetchProducts() {
     try {
-        const response = await fetch('http://localhost:8001/api/v1/carts');
+        const response = await fetch('https://vendingbackend-production.up.railway.app/api/v1/carts');
         const data = await response.json();
         console.log(data.data);
         return data.data;
@@ -76,7 +76,7 @@ function changeQuantity(productId, change) {
 
 // Remove a product from the cart
 function removeItem(cartId) {
-    fetch(`http://localhost:8001/api/v1/carts/${cartId}`, {
+    fetch(`https://vendingbackend-production.up.railway.app/api/v1/carts/${cartId}`, {
       method: "DELETE",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({})
